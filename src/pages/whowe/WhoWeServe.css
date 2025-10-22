@@ -1,0 +1,80 @@
+.who-we-serve-section {
+  background-color: #e8f0ff;
+  padding: 60px 20px;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0d3c91;
+  margin-bottom: 10px;
+}
+
+.section-subtext {
+  font-size: 1rem;
+  color: #1a1a1a;
+  margin-bottom: 40px;
+}
+
+/* --- Logo Grid --- */
+.logo-grid {
+  /* IMPORTANT CHANGE: 6 columns for the 2x6 layout */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 30px;
+  justify-items: center;
+  align-items: center;
+  /* Add max-width to the container if needed to prevent stretching on huge screens */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-item {
+  /* This ensures each logo box takes up its cell space cleanly */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px; /* Gives a consistent height to the logo container */
+  padding: 10px;
+}
+
+.logo-item img {
+  max-height: 180px;
+  max-width: 100%; /* Important for not overflowing the grid cell */
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  filter: grayscale(100%); /* Optional: Make logos grayscale until hover for a sleek effect */
+  opacity: 0.7;
+}
+
+.logo-item img:hover {
+  transform: scale(1.05);
+  filter: none; /* Optional: Restore color on hover */
+  opacity: 1;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1200px) {
+  .logo-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on mid-size screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on tablets */
+    gap: 20px;
+  }
+
+  .logo-item img {
+    max-height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+  }
+}

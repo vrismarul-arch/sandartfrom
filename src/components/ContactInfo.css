@@ -1,0 +1,177 @@
+/* --- Elegant Top Contact Bar --- */
+.top-bar-wrapper {
+  background-color: #f3f3f3;
+  border-bottom: 1px solid #e0e0e0;
+  font-family: "Inter", Arial, sans-serif;
+  color: #444;
+  font-size: 14px;
+  line-height: 38px;
+  height: 38px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* --- Inner Container --- */
+.top-bar-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Left Spacer */
+.top-bar-left {
+  flex-grow: 1;
+}
+
+/* --- Right Side --- */
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* --- Contact Items --- */
+.contact-item,
+.action-link {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.contact-item:hover,
+.action-link:hover {
+  color: #e31818;
+}
+
+/* --- Phone Section --- */
+.phone {
+  padding-left: 0;
+}
+
+.icon {
+  font-size: 16px;
+  margin-right: 6px;
+  line-height: 1;
+  position: relative;
+  top: 1px;
+}
+
+.phone-icon {
+  color: #e31818;
+}
+
+.clock-icon {
+  color: #777;
+}
+
+.phone-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.phone-number {
+  color: #e31818;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.phone-number:hover {  color: #999;
+
+  text-decoration: underline;
+}
+
+.phone-separator {
+  margin: 0 5px;
+  color: #999;
+  font-weight: 400;
+}
+
+/* --- Vertical Separator --- */
+.separator-left {
+  position: relative;
+}
+
+.separator-left::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 1px;
+  background-color: #d0d0d0;
+}
+
+/* Adjusted padding for items after separator */
+.hours,
+.action-link {
+  padding-left: 18px;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+  .top-bar-wrapper {
+    font-size: 13px;
+    height: auto;
+    line-height: normal;
+    padding: 6px 0;
+  }
+
+  .top-bar-content {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .top-bar-right {
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    gap: 4px;
+  }
+
+  .separator-left::before {
+    display: none;
+  }
+
+  .contact-item,
+  .action-link {
+    padding: 3px 0;
+  }
+
+  .phone-list {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  .phone-separator {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .top-bar-content {
+    padding: 0 16px;
+  }
+
+  .phone-number {
+    font-size: 13px;
+  }
+
+  .icon {
+    font-size: 15px;
+  }
+}

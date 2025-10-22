@@ -1,60 +1,84 @@
-import React from 'react';
-import './HeroBanner.css';
-import leftCamera from './right.png'; // Placeholder path for left 3D camera image
-import rightCamera from './left.png'; // Placeholder path for right 3D camera image
-import flowLines from './bgele.png'; // Placeholder path for flow lines image
+// src/components/HeroBanner/HeroBanner.jsx
+import React from "react";
+import { Carousel } from "antd";
+import "./HeroBanner.css";
+
+import slide1 from "./banner1.png";
+import slide2 from "./banner2.png";
+import slide3 from "./banner3.png";
+
 const HeroBanner = () => {
-  return (
-    <section className="heroSection">
-      <div className="heroContainer">
+  const slides = [
+    {
+      image: slide1,
+      title: "EXPERT AND QUALIFIED STAFF!",
+      subtitle: "Our professional workers will take care of it.",
+      buttonText: "We Connect",
+      path: "tel:+919790984055", // ✅ Updated phone number
+    },
+    {
+      image: slide2,
+      title: "ADVANCED SECURITY SOLUTIONS",
+      subtitle: "Delivering top-tier protection for your business and home.",
+      buttonText: "EXPLORE SERVICES",
+      path: "#services",
+    },
+    {
+      image: slide3,
+      title: "SMART TECHNOLOGY IN ACTION",
+      subtitle: "Integrating innovation and reliability for modern safety.",
+    },
+  ];
 
-        {/* Background Spheres */}
-        <div className="bgElements">
-          <span className="sphere sphere1"></span>
-          <span className="sphere sphere2"></span>
-          <span className="sphere sphere3"></span>
-        </div>
+  return (
+    <section className="heroSection">
+      <Carousel
+        autoplay
+        dotPosition="bottom"
+        className="heroCarousel"
+        effect="fade"
+      >
+        {slides.map((slide, index) => (
+          <div key={index}>
+            <div
+              className="heroSlide"
+              style={{ backgroundImage: `url(${slide.image})` }}
+            >
+              <div className="heroOverlay"></div>
 
-        {/* 📸 3D Camera Images (Note: Swapped src to match visual placement) */}
-        <img 
-          src={leftCamera} // This camera is positioned on the left side of the screen
-          alt="3D Security Camera Left" 
-          className="cameraLeft" 
-        />
-        <img 
-          src={rightCamera} // This camera is positioned on the right side of the screen
-          alt="3D Security Camera Right" 
-          className="cameraRight" 
-        />
-        
-        {/* ✨ Flow Lines/Connections (Must be a transparent PNG/SVG asset) */}
-        <div className="flowLines">
-           <img 
-             src={flowLines} // Replace with your actual asset path
-             alt="Data Flow Lines" 
-             className="flowImage" 
-           />
-        </div>
+              <div className="heroContainer">
+                {/* --- Top Text Section --- */}
+                <div className="topContentBox fadeInUp">
+                  <h1 className="heroTitle">{slide.title}</h1>
+                  <p className="heroDescription">{slide.subtitle}</p>
 
-        {/* Main Glass Content Box */}
-        <div className="heroContentBox glassBox">
-          <h1 className="heroTitle">
-            Protecting Your Home <br />
-            Securing Your Peace
-          </h1>
-          <p className="heroDescription">
-            Get round-the-clock protection with our cutting <br />
-            edge security systems and monitoring services
-          </p>
-          <a href="tel:+919790984055" className="ctaButton">
-  Call Now ➔
-</a>
+                  {/* ✅ Show button only if text & path exist */}
+                  {slide.buttonText && slide.path && (
+                    <a href={slide.path} className="ctaButton topCta">
+                      {slide.buttonText}
+                    </a>
+                  )}
+                </div>
+              </div>
 
-        </div>
-
-      </div>
-    </section>
-  );
+              {/* --- Bottom Footer Bar --- */}
+              <div className="bottomFooterBar">
+                <p className="footerText">
+                  Looking for a quality and affordable service?
+                </p>
+                <a
+                  href="https://n8n-en7m.onrender.com/form/809256a5-0f50-47e8-930c-6ebe6ce2981e"
+                  className="ctaButton bottomCta"
+                >
+                  GET AN ONLINE QUOTE
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Carousel>
+    </section>
+  );
 };
 
 export default HeroBanner;

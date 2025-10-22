@@ -1,190 +1,206 @@
-/* --- Section & Container --- */
+:root {
+  --primary-red: #e70017;
+  --primary-blue: #3f68a5;
+  --text-light: #ffffff;
+  --text-dark: #1f1f1f;
+  --shadow-dark: rgba(0, 0, 0, 0.45);
+}
+
+/* --- Carousel Wrapper --- */
 .heroSection {
   position: relative;
   width: 100%;
-  min-height: 90vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #1a2b97, #1a2b97);
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
-  padding: 250px 0;
 }
 
-.heroContainer {
+.heroCarousel {
+  width: 100%;
+  height: 100vh;
+  max-height: 750px;
+}
+
+/* --- Each Slide --- */
+.heroSlide {
   position: relative;
-  width: 90%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 50px 0;
+  width: 100%;
+  height: 100vh;
+  max-height: 750px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* --- Background Spheres (Glowing, blurred effect) --- */
-.bgElements .sphere {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(180, 100, 255, 0.7);
-  filter: blur(45px);
-  animation: float 8s ease-in-out infinite;
-  z-index: 1;
-}
-
-.sphere1 {
-  width: 150px;
-  height: 150px;
-  top: 15%;
-  left: 10%;
-}
-
-.sphere2 {
-  width: 200px;
-  height: 200px;
-  top: 55%;
-  right: 18%;
-}
-
-.sphere3 {
-  width: 100px;
-  height: 100px;
-  bottom: 25%;
-  left: 45%;
-  opacity: 0.6;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-25px) scale(1.05); }
-}
-
-/* --- Camera Images --- */
-.cameraLeft, .cameraRight {
-  position: absolute;
-  width: 350px;
-  height: auto;
-  object-fit: contain;
-  z-index: 4;
-}
-
-.cameraLeft {
-  left: -150px;
-  bottom: -220px;
-  transform: rotateY(15deg) rotate(5deg);
-}
-
-.cameraRight {
-  right: -150px;
-  top: 20px;
-  transform: rotate(30deg);
-}
-
-/* --- Flow Lines (transparent PNG/SVG) --- */
-.flowLines {
+/* --- Overlay --- */
+.heroOverlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 3;
-  pointer-events: none;
+  background: rgba(10, 10, 10, 0.55);
+  z-index: 1;
 }
 
-.flowLines .flowImage {
-  width: 100%;
+/* --- Content Container --- */
+.heroContainer {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 1300px;
+  margin: 0 auto;
   height: 100%;
-  object-fit: contain;
-  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-/* --- Hero Content Glass Box --- */
-.heroContentBox.glassBox {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-radius: 20px;
-  padding: 60px 80px;
+/* --- Text Box --- */
+.topContentBox {
+  color: var(--text-light);
   text-align: left;
-  box-shadow: 
-    0 4px 10px rgba(255, 255, 255, 0.05) inset,
-    0 10px 40px rgba(0, 0, 0, 0.4);
-  color: #ffffff;
-  z-index: 5;
-  max-width:100%;
-  margin-right: auto;
+  max-width: 700px;
+  animation: fadeInUp 1.2s ease both;
 }
 
 .heroTitle {
-  font-size: 3em;
-  font-weight: 800;
-  margin-bottom: 25px;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 900;
+  text-transform: uppercase;
   line-height: 1.1;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 12px var(--shadow-dark);
 }
 
 .heroDescription {
-  font-size: 1.2em;
-  margin-bottom: 40px;
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
+  font-weight: 400;
   line-height: 1.6;
+  margin-bottom: 2rem;
+  color: #f1f1f1;
+  text-shadow: 1px 1px 8px var(--shadow-dark);
 }
 
+/* --- CTA Buttons --- */
 .ctaButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px 30px;
-  background: #ffffff;
-  color: #1a2b97;
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  border-radius: 50px;
   font-weight: 700;
-  font-size: 1.1em;
-  border-radius: 10px;
   text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.35s ease;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+.topCta {
+  background-color: var(--primary-blue);
+  color: var(--text-light);
+  border: 2px solid var(--primary-blue);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.topCta:hover {
+  background-color: transparent;
+  color: var(--text-light);
+  border-color: var(--text-light);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+/* --- Bottom Footer Bar --- */
+.bottomFooterBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background: var(--primary-red);
+  color: var(--text-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 1.5rem;
+  flex-wrap: wrap;
+  z-index: 3;
+}
+
+.footerText {
+  font-size: 1.1rem;
+  margin: 0;
+  text-align: center;
+}
+
+.bottomCta {
+  background-color: #000;
+  color: var(--text-light);
+  border: 2px solid transparent;
+  border-radius: 40px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.ctaButton:hover {
-  background: #e6e6e6;
-  color: #2b113e;
-  transform: translateY(-2px);
+.bottomCta:hover {
+  background-color: transparent;
+  border: 2px solid var(--text-light);
+  color: var(--text-light);
 }
 
-/* --- Responsiveness --- */
-@media (max-width: 900px) {
-  .heroSection {
-    min-height: 70vh;
-    padding: 120px 0 ;
+/* --- Carousel Dots --- */
+.ant-carousel .slick-dots li button {
+  background: var(--text-light);
+  opacity: 0.6;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  background: var(--primary-red);
+  opacity: 1;
+}
+
+/* --- Animations --- */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
   }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
   .heroContainer {
-    flex-direction: column;
-    padding: 0;
-  }
-
-  .cameraLeft, .cameraRight {
-    display: none;
-  }
-.heroContentBox.glassBox {
-  padding: 30px 20px;
-  }
-  .glassBox {
-    max-width: 90%;
-    padding: 40px 30px;
+    align-items: center;
+    height: 80%;
     text-align: center;
-    margin: 0 auto;
   }
 
+  .topContentBox {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 600px) {
   .heroTitle {
-    font-size: 2em;
+    font-size: 2rem;
   }
 
   .heroDescription {
-    font-size: 1em;
+    font-size: 1rem;
   }
 
-  .sphere1, .sphere2, .sphere3 {
-    opacity: 0.5;
-    filter: blur(25px);
+  .ctaButton {
+    padding: 0.7rem 1.6rem;
+    font-size: 0.9rem;
+  }
+
+  .bottomFooterBar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footerText {
+    font-size: 1rem;
   }
 }

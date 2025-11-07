@@ -24,13 +24,10 @@ export default function BookingForm({ onSuccess }) {
     { key: "contact", title: "Contact" },
   ];
 
-  // -------- Price Calculation --------
   const calculatePrice = (values) => {
     if (!values) return 0;
 
     let basePrice = 0;
-
-    // Event type base price
     switch (values.eventType) {
       case "Corporate Live Show": basePrice = 5000; break;
       case "Wedding Event": basePrice = 7000; break;
@@ -38,7 +35,6 @@ export default function BookingForm({ onSuccess }) {
       default: basePrice = 2000;
     }
 
-    // Audience size pricing
     const audienceMap = {
       "Below 100": 100,
       "100 - 300": 200,
@@ -48,18 +44,15 @@ export default function BookingForm({ onSuccess }) {
     };
     basePrice += audienceMap[values.audienceSize] || 0;
 
-    // Add-ons price
     const addonPrice = (values.addons || []).length * 500;
     basePrice += addonPrice;
 
-    // Duration modifier
     if (values.duration === "Half Day") basePrice *= 1.5;
     if (values.duration === "Full Day") basePrice *= 2;
 
     return basePrice;
   };
 
-  // -------- Navigation Functions --------
   const next = async () => {
     try {
       if (currentStep === 0) {
@@ -79,7 +72,6 @@ export default function BookingForm({ onSuccess }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // -------- Form Submission --------
   const onFinish = async (values) => {
     setLoading(true);
     try {
@@ -96,27 +88,27 @@ export default function BookingForm({ onSuccess }) {
         }
       });
 
-      const response = await api.post("/api/entries/add", formData, {
+      await api.post("/api/entries/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       form.resetFields();
 
-      // -------- Modern Success Notification --------
+      // ✅ Notification JSX safe
       setNotification({
         status: "success",
         title: "🎉 Booking Confirmed!",
         message: (
           <div style={{ lineHeight: 1.6 }}>
-            <p>Hi <strong>{values.name}</strong>,</p>
-            <p>Your sand art booking has been successfully submitted!</p>
-            <p>
+            <div>Hi <strong>{values.name}</strong>,</div>
+            <div>Your sand art booking has been successfully submitted!</div>
+            <div>
               ✅ A detailed price catalog and your booking information have been sent to your registered email.<br/>
               ✅ Our team will review your request and contact you shortly to finalize the details.
-            </p>
-            <p style={{ fontStyle: "italic", color: "#555" }}>
+            </div>
+            <div style={{ fontStyle: "italic", color: "#555" }}>
               Thank you for choosing Sand Art — we look forward to making your event memorable!
-            </p>
+            </div>
           </div>
         ),
         buttonText: "Go Home",
@@ -132,9 +124,9 @@ export default function BookingForm({ onSuccess }) {
         title: "⚠ Submission Failed",
         message: (
           <div style={{ lineHeight: 1.6 }}>
-            <p>Oops! Something went wrong while submitting your booking.</p>
-            <p>{err?.response?.data?.message || "Please try again."}</p>
-            <p style={{ fontStyle: "italic", color: "#555" }}>If the issue persists, contact our support team.</p>
+            <div>Oops! Something went wrong while submitting your booking.</div>
+            <div>{err?.response?.data?.message || "Please try again."}</div>
+            <div style={{ fontStyle: "italic", color: "#555" }}>If the issue persists, contact our support team.</div>
           </div>
         ),
         buttonText: "Retry",
@@ -147,7 +139,6 @@ export default function BookingForm({ onSuccess }) {
 
   if (notification) return <NotificationCard {...notification} />;
 
-  // -------- JSX --------
   return (
     <div className="onebyone-form-wrapper">
       <Card className="onebyone-card">
@@ -172,7 +163,7 @@ export default function BookingForm({ onSuccess }) {
 
         {/* Form */}
         <Form form={form} layout="vertical" onFinish={onFinish} className="onebyone-form">
-          {/* STEP 1: Event Details */}
+          {/* STEP 1 */}
           <div className={`step-panel ${currentStep === 0 ? "visible" : "hidden"}`}>
             <Form.Item label="Event Type" name="eventType" rules={[{ required: true, message: "Please select an event type." }]}>
               <Select placeholder="Select event type" size="large">
@@ -220,7 +211,7 @@ export default function BookingForm({ onSuccess }) {
             </div>
           </div>
 
-          {/* STEP 2: Add-ons & Upload */}
+          {/* STEP 2 */}
           <div className={`step-panel ${currentStep === 1 ? "visible" : "hidden"}`}>
             <Form.Item label="Select Optional Add-ons" name="addons">
               <Checkbox.Group style={{ width: '100%' }}>
@@ -252,11 +243,10 @@ export default function BookingForm({ onSuccess }) {
             </div>
           </div>
 
-          {/* STEP 3: Summary */}
+          {/* STEP 3 */}
           <div className={`step-panel ${currentStep === 2 ? "visible" : "hidden"}`}>
             <div className="summary-box">
               <h3>Booking Summary</h3>
-              <p className="muted">This summary is based on your current selections. Final pricing will be confirmed after review.</p>
               <div className="summary-rows">
                 <div><strong>Event Type:</strong><span>{form.getFieldValue("eventType") || "—"}</span></div>
                 <div><strong>Event Date:</strong><span>{form.getFieldValue("date") || "—"}</span></div>
@@ -264,9 +254,6 @@ export default function BookingForm({ onSuccess }) {
                 <div><strong>Duration:</strong><span>{form.getFieldValue("duration") || "—"}</span></div>
                 <div><strong>Add-ons:</strong><span>{(form.getFieldValue("addons") || []).join(", ") || "None Selected"}</span></div>
                 <div><strong>Ref. Images:</strong><span>{form.getFieldValue("images")?.length || 0} File(s)</span></div>
-                {/* <div style={{ marginTop: "10px", fontSize: "18px", fontWeight: "bold" }}>
-                  <strong>Total Price:</strong> ₹{price.toLocaleString()}
-                </div> */}
               </div>
             </div>
 
@@ -276,7 +263,7 @@ export default function BookingForm({ onSuccess }) {
             </div>
           </div>
 
-          {/* STEP 4: Contact */}
+          {/* STEP 4 */}
           <div className={`step-panel ${currentStep === 3 ? "visible" : "hidden"}`}>
             <Form.Item label="Full Name" name="name" rules={[{ required: true, message: "Please enter your name." }]}>
               <Input size="large" placeholder="Your Full Name" />

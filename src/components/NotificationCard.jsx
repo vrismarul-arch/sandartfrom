@@ -29,7 +29,7 @@ export default function NotificationCard({
       closable={false}
       footer={null}
       centered
-      width={340} // 👈 shrink width
+      width={340}
       onCancel={() => {
         setOpen(false);
         if (onClick) onClick();
@@ -47,7 +47,8 @@ export default function NotificationCard({
         <h3 className="notif-title">{title}</h3>
       </div>
 
-      <p className="notif-message">{message}</p>
+      {/* ✅ Wrap message in a div, not p */}
+      <div className="notif-message">{message}</div>
 
       <div className="notif-footer">
         <Button type={isSuccess ? "primary" : "default"} onClick={onClick} block>

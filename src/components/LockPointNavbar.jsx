@@ -1,50 +1,34 @@
-import React, { useState } from 'react';
-import './LockPointNavbar.css';
-
-const NAV_LINKS = [
-    // { name: 'About', href: '#about' },
-    // { name: 'Service', href: '#service' },
-    // { name: 'Projects', href: '#projects' },
-    // { name: 'Contact', href: '#contact' },
-];
+import React, { useState } from "react";
+import "./LockPointNavbar.css";
+import { PhoneOutlined } from "@ant-design/icons";
 
 const LockPointNavbar = () => {
-    const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  return (
+    <>
+      <header className="main-navbar">
+        <div className="container">
 
-    const toggleMobileMenu = () => {
-        setMobileMenuOpen(!isMobileMenuOpen);
-    };
+          {/* Logo */}
+          <img src="logo.png" alt="Logo" className="logo-img" />
 
-    return (
-        <header className="header glassEffect">
-            <div className="container">
-                {/* Logo */}
-                <img src="logo.png" alt="Zenzones Logo" className="logo-img" />
+          {/* Right Section (Phones) */}
+          <div className="top-bar-right">
+            <a href="tel:+919025994291" className="contact-item phone">
+              <PhoneOutlined className="icon phone-icon" />
+              <span className="phone-number">+91 9025994291</span>
+            </a>
 
-                {/* Hamburger Menu for Mobile
-                <div className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`} onClick={toggleMobileMenu}>
-                    <span className="bar"></span>
-                    <span className="bar"></span>
-                    <span className="bar"></span>
-                </div> */}
+            <span className="phone-separator">|</span>
 
-                {/* Navigation Links */}
-                <nav className={`nav ${isMobileMenuOpen ? 'navActive' : ''}`}>
-                    <ul className="navList navLinksGlass">
-                        {NAV_LINKS.map((link) => (
-                            <li key={link.name} className="navItem">
-                                <a href={link.href} className="navLink" aria-label={link.name}>
-                                    {link.name}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
+            <a href="tel:+919790984055" className="contact-item phone">
+              <span className="phone-number">+91 9790984055</span>
+            </a>
+          </div>
 
-               
-            </div>
-        </header>
-    );
+        </div>
+      </header>
+    </>
+  );
 };
 
 export default LockPointNavbar;

@@ -46,8 +46,9 @@ const Footer = () => {
               </li>
               <li>
                 <FaMapMarkerAlt className="footer-icon" />
-                49F1, Anugraha Apartment, <br />
-                Dr. Radhakrishnan Salai, Kurinji St, Valasaravakkam, Chennai-87
+                <p className="footer-about"> 49F1, Anugraha Apartment, <br />
+                Dr. Radhakrishnan Salai, Kurinji St, Valasaravakkam, Chennai-87</p>
+               
               </li>
             </ul>
           </div>

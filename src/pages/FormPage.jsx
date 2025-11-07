@@ -3,59 +3,122 @@ import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, Card, Upload, Select, Checkbox, Row, Col } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { api } from "../api/api";
-import "./FormPage.css";
 import NotificationCard from "../components/NotificationCard";
+import "./FormPage.css";
+import showtime from './showtime.png';
 
 const { Option } = Select;
 
-export default function FormPageMobile({ onSuccess }) {
+export default function BookingForm({ onSuccess }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [price, setPrice] = useState(0);
   const navigate = useNavigate();
 
+  const steps = [
+    { key: "event", title: "Event Details" },
+    { key: "addons", title: "Add-ons" },
+    { key: "summary", title: "Summary" },
+    { key: "contact", title: "Contact" },
+  ];
+
+  // -------- Price Calculation --------
+  const calculatePrice = (values) => {
+    if (!values) return 0;
+
+    let basePrice = 0;
+
+    // Event type base price
+    switch (values.eventType) {
+      case "Corporate Live Show": basePrice = 5000; break;
+      case "Wedding Event": basePrice = 7000; break;
+      case "Birthday Celebration": basePrice = 3000; break;
+      default: basePrice = 2000;
+    }
+
+    // Audience size pricing
+    const audienceMap = {
+      "Below 100": 100,
+      "100 - 300": 200,
+      "300 - 600": 300,
+      "600 - 1000": 400,
+      "1000+": 500,
+    };
+    basePrice += audienceMap[values.audienceSize] || 0;
+
+    // Add-ons price
+    const addonPrice = (values.addons || []).length * 500;
+    basePrice += addonPrice;
+
+    // Duration modifier
+    if (values.duration === "Half Day") basePrice *= 1.5;
+    if (values.duration === "Full Day") basePrice *= 2;
+
+    return basePrice;
+  };
+
+  // -------- Navigation Functions --------
+  const next = async () => {
+    try {
+      if (currentStep === 0) {
+        await form.validateFields(["eventType", "date", "audienceSize", "duration"]);
+      }
+      if (currentStep === 2) {
+        const values = form.getFieldsValue();
+        setPrice(calculatePrice(values));
+      }
+      setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {}
+  };
+
+  const prev = () => {
+    setCurrentStep((s) => Math.max(s - 1, 0));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // -------- Form Submission --------
   const onFinish = async (values) => {
     setLoading(true);
     try {
+      await form.validateFields(["name", "phoneNumber"]);
+
       const formData = new FormData();
+      Object.keys(values).forEach((key) => {
+        if (key === "images") {
+          values.images?.forEach((file) => formData.append("images", file.originFileObj));
+        } else if (key === "addons") {
+          formData.append("addons", JSON.stringify(values.addons || []));
+        } else {
+          formData.append(key, values[key] || "");
+        }
+      });
 
-      // Required fields
-      formData.append("name", values.name);
-      formData.append("phoneNumber", values.phoneNumber);
-      formData.append("email", values.email);
-      formData.append("companyName", values.companyName);
-
-      // Requirement type (send only if selected)
-      if (values.requirementType) {
-        formData.append("requirementType", values.requirementType);
-      }
-
-      // Requirement details (optional)
-      formData.append("requirement", values.requirement || "");
-
-      // Brands (always send as array, even if empty)
-      formData.append("brands", JSON.stringify(values.brands || []));
-
-      // Images (optional)
-      if (values.images && values.images.length > 0) {
-        values.images.forEach((fileWrapper) => {
-          formData.append("images", fileWrapper.originFileObj);
-        });
-      }
-
-      // Submit to backend
       const response = await api.post("/api/entries/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // Reset form
       form.resetFields();
 
-      // Show success notification
+      // -------- Modern Success Notification --------
       setNotification({
         status: "success",
-        title: "Submitted Successfully!",
-        message: response.data.message,
+        title: "🎉 Booking Confirmed!",
+        message: (
+          <div style={{ lineHeight: 1.6 }}>
+            <p>Hi <strong>{values.name}</strong>,</p>
+            <p>Your sand art booking has been successfully submitted!</p>
+            <p>
+              ✅ A detailed price catalog and your booking information have been sent to your registered email.<br/>
+              ✅ Our team will review your request and contact you shortly to finalize the details.
+            </p>
+            <p style={{ fontStyle: "italic", color: "#555" }}>
+              Thank you for choosing Sand Art — we look forward to making your event memorable!
+            </p>
+          </div>
+        ),
         buttonText: "Go Home",
         onClick: () => {
           setNotification(null);
@@ -63,12 +126,17 @@ export default function FormPageMobile({ onSuccess }) {
           navigate("/");
         },
       });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
       setNotification({
         status: "error",
-        title: "Submission Failed",
-        message: "Please try again later.",
+        title: "⚠ Submission Failed",
+        message: (
+          <div style={{ lineHeight: 1.6 }}>
+            <p>Oops! Something went wrong while submitting your booking.</p>
+            <p>{err?.response?.data?.message || "Please try again."}</p>
+            <p style={{ fontStyle: "italic", color: "#555" }}>If the issue persists, contact our support team.</p>
+          </div>
+        ),
         buttonText: "Retry",
         onClick: () => setNotification(null),
       });
@@ -77,115 +145,160 @@ export default function FormPageMobile({ onSuccess }) {
     }
   };
 
-  if (notification) {
-    return <NotificationCard {...notification} />;
-  }
+  if (notification) return <NotificationCard {...notification} />;
 
+  // -------- JSX --------
   return (
-    <div className="mobile-form-container">
-      <Card className="glass-card-mobile">
-        <h2 className="form-title-mobile">Submit Your Requirement</h2>
-        <p>Fill the details and upload images (optional)</p>
+    <div className="onebyone-form-wrapper">
+      <Card className="onebyone-card">
+        {/* Banner */}
+        <div className="form-banner">
+          <img src={showtime} alt="Sand Art Banner" className="form-banner-img" />
+          <div className="banner-text-overlay">
+            <h1 className="banner-title">Book Your Sand Art Event</h1>
+            <p className="banner-sub">One step at a time — we’ll guide you to a perfect booking.</p>
+          </div>
+        </div>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          className="glass-form-mobile"
-        >
-          <Row gutter={16}>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Name"
-                name="name"
-                rules={[{ required: true, message: "Enter your name" }]}
-              >
-                <Input placeholder="Your full name" />
-              </Form.Item>
-            </Col>
+        {/* Step Progress */}
+        <div className="simple-progress">
+          {steps.map((s, i) => (
+            <div key={s.key} className={`prog-step ${i === currentStep ? "active" : i < currentStep ? "done" : ""}`}>
+              <div className="prog-circle">{i + 1}</div>
+              <div className="prog-label">{s.title}</div>
+            </div>
+          ))}
+        </div>
 
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Phone Number"
-                name="phoneNumber"
-                rules={[{ required: true, message: "Enter phone number" }]}
-              >
-                <Input placeholder="10-digit phone number" />
-              </Form.Item>
-            </Col>
-          </Row>
+        {/* Form */}
+        <Form form={form} layout="vertical" onFinish={onFinish} className="onebyone-form">
+          {/* STEP 1: Event Details */}
+          <div className={`step-panel ${currentStep === 0 ? "visible" : "hidden"}`}>
+            <Form.Item label="Event Type" name="eventType" rules={[{ required: true, message: "Please select an event type." }]}>
+              <Select placeholder="Select event type" size="large">
+                <Option value="Corporate Live Show">Corporate Live Show</Option>
+                <Option value="Wedding Event">Wedding Event</Option>
+                <Option value="Birthday Celebration">Birthday Celebration</Option>
+                <Option value="Portrait Gifting">Portrait Gifting</Option>
+                <Option value="Corporate Pre-Shoot">Corporate Pre-Shoot</Option>
+                <Option value="Sand Lightboard">Sand Lightboard</Option>
+                <Option value="Name Revealing Ceremony">Name Revealing Ceremony</Option>
+              </Select>
+            </Form.Item>
 
-          <Row gutter={16}>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Email"
-                name="email"
-                rules={[{ type: "email", message: "Enter a valid email" }]}
-              >
-                <Input placeholder="Your email address" />
-              </Form.Item>
-            </Col>
+            <Form.Item label="Event Date" name="date" rules={[{ required: true, message: "Please select an event date." }]}>
+              <Input type="date" size="large" />
+            </Form.Item>
 
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Company Name"
-                name="companyName"
-                rules={[{ required: true, message: "Enter company name" }]}
-              >
-                <Input placeholder="Your company name" />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Form.Item label="Venue / Location" name="venue">
+              <Input size="large" placeholder="City or Venue Name (Optional)" />
+            </Form.Item>
 
-          <Form.Item label="Requirement Product" name="requirementType">
-            <Select placeholder="Select requirement type" allowClear>
-              <Option value="Boom Barrier">Boom Barrier</Option>
-              <Option value="Swing Barrier">Swing Barrier</Option>
-              <Option value="Flap Barrier">Flap Barrier</Option>
-              <Option value="Turnstile">Turnstile (Full/Half Height)</Option>
-              <Option value="Baggage Scanner">Baggage Scanner</Option>
-              <Option value="Metal Detector">Walk-through Metal Detector</Option>
-              <Option value="Bollard System">Bollard System</Option>
-              <Option value="Home Automation">Home Automation</Option>
-            </Select>
-          </Form.Item>
+            <Form.Item label="Audience Size" name="audienceSize" rules={[{ required: true, message: "Please specify audience size." }]}>
+              <Select placeholder="Select audience size" size="large">
+                <Option value="Below 100">Below 100</Option>
+                <Option value="100 - 300">100 - 300</Option>
+                <Option value="300 - 600">300 - 600</Option>
+                <Option value="600 - 1000">600 - 1000</Option>
+                <Option value="1000+">1000+</Option>
+              </Select>
+            </Form.Item>
 
-          <Form.Item label="Preferred Brands" name="brands">
-            <Checkbox.Group>
-              <Checkbox value="Essl">Essl</Checkbox>
-              <Checkbox value="Came">Came</Checkbox>
-              <Checkbox value="ZKT">ZKT</Checkbox>
-              <Checkbox value="Hikvision">Hikvision</Checkbox>
-              <Checkbox value="Honeywell">Honeywell</Checkbox>
-            </Checkbox.Group>
-          </Form.Item>
+            <Form.Item label="Event Duration (hrs)" name="duration" rules={[{ required: true, message: "Please select event duration." }]}>
+              <Select placeholder="Select duration" size="large">
+                <Option value="1 Hour">1 Hour</Option>
+                <Option value="2 Hours">2 Hours</Option>
+                <Option value="3 Hours">3 Hours</Option>
+                <Option value="Half Day">Half Day</Option>
+                <Option value="Full Day">Full Day</Option>
+              </Select>
+            </Form.Item>
 
-          <Form.Item label="Requirement Details" name="requirement">
-            <Input.TextArea rows={3} placeholder="Describe your requirement" />
-          </Form.Item>
+            <div className="controls-row">
+              <div />
+              <Button type="primary" onClick={next} size="large">Continue →</Button>
+            </div>
+          </div>
 
-          <Form.Item
-            label="Upload Images"
-            name="images"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => e.fileList}
-          >
-            <Upload beforeUpload={() => false} multiple maxCount={5}>
-              <Button icon={<UploadOutlined />}>Select up to 5 images</Button>
-            </Upload>
-          </Form.Item>
+          {/* STEP 2: Add-ons & Upload */}
+          <div className={`step-panel ${currentStep === 1 ? "visible" : "hidden"}`}>
+            <Form.Item label="Select Optional Add-ons" name="addons">
+              <Checkbox.Group style={{ width: '100%' }}>
+                <Row>
+                  <Col span={12}><Checkbox value="Portrait">Portrait</Checkbox></Col>
+                  <Col span={12}><Checkbox value="Making Video">Making Video</Checkbox></Col>
+                  <Col span={12}><Checkbox value="Music Sync">Music Sync</Checkbox></Col>
+                  <Col span={12}><Checkbox value="Custom Theme">Custom Theme</Checkbox></Col>
+                  <Col span={12}><Checkbox value="Live Mode">Live Mode</Checkbox></Col>
+                </Row>
+              </Checkbox.Group>
+            </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              block
-              size="large"
-              loading={loading}
+            <Form.Item
+              label="Upload Reference Images (Max 5)"
+              name="images"
+              valuePropName="fileList"
+              getValueFromEvent={(e) => e.fileList}
+              extra="Upload images or references that will help us understand your vision."
             >
-              Submit
-            </Button>
-          </Form.Item>
+              <Upload beforeUpload={() => false} multiple maxCount={5} listType="picture">
+                <Button icon={<UploadOutlined />} size="large">Select Files</Button>
+              </Upload>
+            </Form.Item>
+
+            <div className="controls-row">
+              <Button onClick={prev} size="large">← Back</Button>
+              <Button type="primary" onClick={next} size="large">Review Summary →</Button>
+            </div>
+          </div>
+
+          {/* STEP 3: Summary */}
+          <div className={`step-panel ${currentStep === 2 ? "visible" : "hidden"}`}>
+            <div className="summary-box">
+              <h3>Booking Summary</h3>
+              <p className="muted">This summary is based on your current selections. Final pricing will be confirmed after review.</p>
+              <div className="summary-rows">
+                <div><strong>Event Type:</strong><span>{form.getFieldValue("eventType") || "—"}</span></div>
+                <div><strong>Event Date:</strong><span>{form.getFieldValue("date") || "—"}</span></div>
+                <div><strong>Audience Size:</strong><span>{form.getFieldValue("audienceSize") || "—"}</span></div>
+                <div><strong>Duration:</strong><span>{form.getFieldValue("duration") || "—"}</span></div>
+                <div><strong>Add-ons:</strong><span>{(form.getFieldValue("addons") || []).join(", ") || "None Selected"}</span></div>
+                <div><strong>Ref. Images:</strong><span>{form.getFieldValue("images")?.length || 0} File(s)</span></div>
+                {/* <div style={{ marginTop: "10px", fontSize: "18px", fontWeight: "bold" }}>
+                  <strong>Total Price:</strong> ₹{price.toLocaleString()}
+                </div> */}
+              </div>
+            </div>
+
+            <div className="controls-row">
+              <Button onClick={prev} size="large">← Back</Button>
+              <Button type="primary" onClick={next} size="large">Final Step →</Button>
+            </div>
+          </div>
+
+          {/* STEP 4: Contact */}
+          <div className={`step-panel ${currentStep === 3 ? "visible" : "hidden"}`}>
+            <Form.Item label="Full Name" name="name" rules={[{ required: true, message: "Please enter your name." }]}>
+              <Input size="large" placeholder="Your Full Name" />
+            </Form.Item>
+
+            <Form.Item label="Phone Number" name="phoneNumber" rules={[{ required: true, message: "Please enter your phone number." }]}>
+              <Input size="large" placeholder="Your Contact Number" />
+            </Form.Item>
+
+            <Form.Item label="Email Address" name="email" rules={[{ type: 'email', message: 'The input is not a valid E-mail!' }]}>
+              <Input size="large" placeholder="Your Email Address (Optional)" />
+            </Form.Item>
+
+            <Form.Item label="Additional Notes" name="notes">
+              <Input.TextArea rows={4} placeholder="Any specific requests or details you'd like us to know?" />
+            </Form.Item>
+
+            <div className="controls-row">
+              <Button onClick={prev} size="large">← Back</Button>
+              <Button type="primary" htmlType="submit" loading={loading} size="large">Submit Booking</Button>
+            </div>
+          </div>
         </Form>
       </Card>
     </div>

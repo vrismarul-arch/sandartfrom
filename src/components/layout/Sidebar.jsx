@@ -15,22 +15,15 @@ export default function Sidebar({ collapsed, onCollapse }) {
   // Map paths to menu keys
   const pathToKey = {
     "/admin/dashboard": "1",
-    "/admin/analytics": "2", // Corrected path/key mapping for clarity, though it wasn't used
-    "/admin/leads": "3",
+    "/admin/leads": "2", // Corrected path/key mapping for clarity, though it wasn't used
   };
 
   const handleMenuClick = (e) => {
     switch (e.key) {
       case "1":
         navigate("/admin/dashboard");
-        break;
-      case "2":
-        // Assuming key '2' is for '/admin/analytics' based on label "Analytics"
-        navigate("/admin/analytics"); 
-        break;
-      case "3":
-        navigate("/admin/leads");
-        break;
+   
+     
       // Key '4' for Logout is handled separately below or can be added here
       default:
         break;
@@ -107,8 +100,7 @@ export default function Sidebar({ collapsed, onCollapse }) {
         items={[
           { key: "1", icon: <HomeOutlined style={{ color: "#0E2C44" }} />, label: "Dashboard" },
           // Changed path/key to reflect "Analytics" label accurately
-          { key: "2", icon: <BarChartOutlined style={{ color: "#0E2C44" }} />, label: "Analytics" }, 
-          { key: "3", icon: <TeamOutlined style={{ color: "#0E2C44" }} />, label: "Leads" },
+    
         ]}
         style={{
           backgroundColor: "#ffffff",

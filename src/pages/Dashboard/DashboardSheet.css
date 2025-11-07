@@ -64,4 +64,62 @@
   .ant-table {
     overflow-x: auto;
   }
+}.dashboard-container {
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    margin-bottom: 24px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #001529;
+}
+
+.dashboard-subheader {
+    font-size: 18px;
+    font-weight: 500;
+    color: #434343;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 5px;
+}
+
+/* Style for Ant Design Cards */
+.ant-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Loading spinner centering */
+.loading-spinner {
+    display: block;
+    text-align: center;
+    padding: 100px 0;
+}
+
+/* Metrics Row adjustments */
+.metrics-row .ant-statistic-title {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.metrics-row .ant-statistic-content-value {
+    font-size: 28px;
+}
+
+/* Status Breakdown Cards (Small size adjustments) */
+.status-metrics-row .ant-statistic-title {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.status-metrics-row .ant-statistic-content-value {
+    font-size: 16px;
+}
+
+/* Ensure Tags in the table are well-spaced */
+.ant-table-wrapper .ant-tag {
+    margin: 0;
 }

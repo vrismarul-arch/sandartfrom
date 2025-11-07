@@ -1,27 +1,275 @@
-.mobile-form-container {
+/* Page Wrapper */
+.onebyone-form-wrapper {
   display: flex;
   justify-content: center;
+  background: #fdfefe; 
   min-height: 100vh;
+  padding: 40px 16px;
+  font-family: 'Inter', sans-serif; 
 }
 
-.glass-card-mobile {
+/* Base colors */
+:root {
+  --primary-color: #2c7da1; 
+  --accent-color: #f0f4f8; 
+  --text-color: #334155;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+}
+
+.ant-card.onebyone-card .ant-card-body {
+  padding: 0 !important;
+}
+
+.onebyone-card {
   width: 100%;
-  max-width: 400px;
-  border-radius: 16px;
+  max-width: 800px; 
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+  background: #ffffff;
 }
 
-.form-title-mobile {
+/* --- Banner Styling --- */
+.form-banner {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.form-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7) grayscale(0.1);
+}
+
+.banner-text-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
   text-align: center;
-  font-size: 22px;
-  margin-bottom: 16px;
+  padding: 0 20px;
+}
+
+.banner-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.banner-sub {
+  font-size: 16px;
+  opacity: 0.95;
+  margin-top: 0;
+}
+
+/* --- Step Progress --- */
+.simple-progress {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background: var(--accent-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.prog-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  gap: 6px;
+  opacity: 0.5;
+  transition: 0.3s;
+  text-align: center;
+}
+
+.prog-step.active, .prog-step.done { 
+  opacity: 1;
+}
+.prog-step.active .prog-circle {
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(44, 125, 161, 0.2);
+}
+.prog-step.done .prog-circle {
+  background: #a9c5d1;
+  color: #fff;
+}
+
+.prog-circle {
+  width: 34px; 
+  height: 34px;
+  background: #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-color);
+  transition: 0.3s;
+}
+
+.prog-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* --- Form Inside --- */
+.onebyone-form {
+  padding: 30px 40px 40px; 
+}
+
+/* Ant Design Overrides */
+.onebyone-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 14px;
+}
+.onebyone-form .ant-input,
+.onebyone-form .ant-select-selector,
+.onebyone-form .ant-btn {
+  border-radius: 8px;
+}
+.onebyone-form .ant-btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
   font-weight: 600;
 }
-
-.glass-form-mobile .ant-form-item {
-  margin-bottom: 12px;
+.onebyone-form .ant-btn-primary:hover {
+  background-color: #3b8ea9;
+  border-color: #3b8ea9;
+}
+.onebyone-form .ant-checkbox-group-item {
+    margin-bottom: 8px; 
 }
 
-.ant-btn {
-  border-radius: 10px;
-  font-weight: 500;
+/* Step Show/Hide (Smooth) */
+.step-panel {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(10px);
+}
+.step-panel.hidden { 
+  display: none; 
+  opacity: 0; 
+  transform: translateY(0);
+}
+.step-panel.visible { 
+  display: block; 
+  opacity: 1; 
+  transform: translateY(0);
+}
+
+/* --- Buttons --- */
+.controls-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+.controls-row .ant-btn {
+    min-width: 120px; 
+}
+
+/* --- Summary Box --- */
+.summary-box {
+  background: var(--accent-color);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.summary-box h3 { 
+  margin-bottom: 8px; 
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: 700;
+}
+.summary-box .muted { 
+  color: var(--text-muted); 
+  font-size: 13px; 
+  margin-bottom: 15px;
+  display: block;
+}
+
+.summary-rows div {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #cfd8e5;
+  font-size: 15px;
+}
+.summary-rows div:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* ======================================= */
+/* 📱 MOBILE OPTIMIZATIONS (Max Width 600px) */
+/* ======================================= */
+@media (max-width: 600px) {
+    
+    .onebyone-card {
+        border-radius: 0; 
+    }
+
+    .form-banner {
+        height: 180px; 
+    }
+
+    .banner-title {
+        font-size: 24px; 
+    }
+
+    .banner-sub {
+        font-size: 14px; 
+    }
+
+    /* Adjust progress bar */
+    .simple-progress {
+        padding: 15px 10px; 
+    }
+
+    .prog-label {
+        font-size: 11px; 
+        font-weight: 500;
+        max-width: 60px; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Reduce form padding */
+    .onebyone-form {
+        padding: 20px 16px 30px; 
+    }
+
+    /* 👇 CRITICAL: Force 12-span columns to stack to 100% width on mobile (used only for checkboxes in Step 2) */
+    .ant-row > .ant-col-12 {
+        width: 100% !important; 
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .ant-row .ant-col {
+        margin-bottom: 0px; 
+    }
+    /* 👆 END CRITICAL MOBILE COLUMN FIX */
+
+    /* Adjust control buttons to stack */
+    .controls-row {
+        flex-direction: column; 
+        gap: 15px;
+    }
+    .controls-row .ant-btn {
+        width: 100%; 
+        min-width: unset;
+    }
 }

@@ -84,7 +84,7 @@ export default function BookingForm({ onSuccess }) {
         images: [] // images stored visually only — no upload
       };
 
-      await api.post("/api/entries/add", payload);
+      await api.post("/entries/add", payload);
 
       form.resetFields();
       setNotification({
